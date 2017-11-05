@@ -44,6 +44,38 @@ class LinkList extends React.Component {
 		// 4. take the modified data and write it back into the store (cache)
 		store.writeQuery({ query: ALL_LINKS_QUERY, data })
 	}
+
+	_subscribeToNewLinks = () => {
+		this.props.allLinksQuery.subscribeToMore({
+			document: gql`
+				subscription {
+					Link(filter: {
+						mutation_in: [CREATED]
+					}) {
+						node {
+							id
+							url
+							description
+							createdAt
+							postedBy {
+								id
+								name
+							}
+							votes {
+								id
+								user {
+									id
+								}
+							}
+						}
+					}
+				}
+			`,
+			updateQuery: (prev, {subscriptionData}) => {
+				// 
+			}
+		})
+	}
 }
 
 export const ALL_LINKS_QUERY = gql`

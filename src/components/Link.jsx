@@ -19,7 +19,10 @@ class Link extends React.Component {
 		  	</div>
 			{this.props.link && 
 		  	<div className="ml1">
-				<div>{this.props.link.description} (<a href={this.props.link.url}>{this.props.link.url}</a>)</div>
+				<div>
+  					<span className='pointer' title={this.props.link.url} onClick={ () => window.location.href = this.props.link.url }>{this.props.link.description}</span>
+  					&nbsp;(<a className='gray' href={this.props.link.url}>{this.props.link.url}</a>)
+				</div>
 				<div className="f6 lh-copy gray">
 				{this.props.link.votes && `${this.props.link.votes.length} votes | `} 
 				by {this.props.link.postedBy ? this.props.link.postedBy.name : 'Unknown'} · {timeDifferenceForDate(this.props.link.createdAt)}

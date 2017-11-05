@@ -4,7 +4,7 @@ import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import Link from './Link'
 
-import { GC_USER_ID, GC_AUTH_TOKEN, LINKS_PER_PAGE } from '../constants'
+import { LINKS_PER_PAGE } from '../constants'
 
 class LinkList extends React.Component {
 	componentWillMount () {
@@ -30,8 +30,7 @@ class LinkList extends React.Component {
 
 		const isNewPage = this.props.location.pathname.includes('new') || this.props.location.pathname === '/'
 		const linksToRender = this._getLinksToRender(isNewPage)
-		const userId = localStorage.getItem(GC_USER_ID)
-		
+
 		return (
 		  <div>
 			<div>

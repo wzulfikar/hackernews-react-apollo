@@ -13,6 +13,7 @@ class Search extends Component {
 		links: [],
 		searchText: '',
 		loading: false,
+		noLinksFound: false,
 	}
 
 	componentDidMount(){
@@ -25,14 +26,24 @@ class Search extends Component {
 			<div>
 				<input type="text" 
 				onChange={(e) => this.setState({ searchText: e.target.value })} 
+				onKeyPress={this._handleKeyPress}
 				placeholder='insert text to search'
 				ref={(input) => { this.searchInput = input; }}
 				/>
 				<button onClick={() => this._executeSearch() }>{this.state.loading ? '...' : 'search'}</button>
 			</div>
+			{ this.state.noLinksFound && <span style={{ lineHeight: 2 }}>No links found :(</span> }
 			{this.state.links.map((link, index) => <Link key={link.id} link={link} index={index} />)}
 		</div>
 	  )
+	}
+
+	_handleKeyPress = (e) => {
+		// execute search if user 
+		// pressed enter in search input
+	    if(e.key === 'Enter'){
+	        this._executeSearch()
+	    }
 	}
 
 	_executeSearch = async () => {
@@ -52,7 +63,7 @@ class Search extends Component {
 		const links = result.data.allLinks
 
 		// update search results
-		this.setState({ links, loading: false })
+		this.setState({ links, noLinksFound: !links.length, loading: false })
 	}
 }
 

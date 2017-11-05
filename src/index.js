@@ -26,6 +26,7 @@ const httpLink = createHttpLink({ uri: ENDPOINT_SIMPLE_API })
 
 const wsClient = new SubscriptionClient(ENDPOINT_SUBSCRIPTION_API, {
 	reconnect: true,
+	timeout: 30000,
 	connectionParams: {
 		authToken: localStorage.getItem(GC_AUTH_TOKEN)
 	}

@@ -6,9 +6,7 @@ import Link from './Link'
 
 class LinkList extends React.Component {
 	componentWillMount () {
-		if (!this.props.allLinksQuery.loading) {
-			this.props.allLinksQuery.refetch()
-		}
+		this._subscribeToNewLinks()
 	}
 
 	render () {
@@ -46,6 +44,10 @@ class LinkList extends React.Component {
 	}
 
 	_subscribeToNewLinks = () => {
+		console.log('subscribing to new links')
+
+		// `subscribeToMore` is a function 
+		// available on every query result in react-apollo
 		this.props.allLinksQuery.subscribeToMore({
 			document: gql`
 				subscription {
@@ -72,7 +74,21 @@ class LinkList extends React.Component {
 				}
 			`,
 			updateQuery: (prev, {subscriptionData}) => {
-				// 
+				console.log('updateQuery', subscriptionData)
+				if (!subscriptionData.data) {
+					return prev
+				}
+
+				// merge new link with previous links
+				const newAllLinks = [
+					subscriptionData.data.Link.node,
+					...prev.allLinks
+				]
+				const result = {
+					...prev,
+					allLinks: newAllLinks
+				}
+				return result
 			}
 		})
 	}

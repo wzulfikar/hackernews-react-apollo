@@ -9,7 +9,9 @@
     "graphql": "^0.11.7",
     "react": "^16.0.0",
     "react-apollo": "^2.0.0",
-    "react-dom": "^16.0.0"
+    "react-dom": "^16.0.0",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2"
   },
   "devDependencies": {
     "graphql-tag": "^2.5.0",

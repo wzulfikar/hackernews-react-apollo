@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom'
 import './styles/index.css';
 import App from './components/App';
 import registerServiceWorker from './registerServiceWorker';
@@ -15,11 +16,15 @@ const client = new ApolloClient({
 	cache: new InMemoryCache().restore(window.__APOLLO_STATE__),
 });
 
-ReactDOM.render(
-    // wrap the app with higher order component `ApolloProvider`
-	<ApolloProvider client={client}>
-		<App />
-	</ApolloProvider>, 
+// 1. wrap App component with `BrowserRouter` to provide
+// its child components access to the routing functionality.
+// 2. wrap the app with higher order component `ApolloProvider`
+ReactDOM.render( 
+	<BrowserRouter>
+		<ApolloProvider client={client}>
+			<App />
+		</ApolloProvider>
+	</BrowserRouter>, 
 	document.getElementById('root')
 );
 registerServiceWorker();

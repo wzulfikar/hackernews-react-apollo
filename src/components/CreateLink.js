@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 
+import { GC_USER_ID } from '../constants'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 
@@ -32,13 +33,20 @@ class CreateLink extends Component {
 	}
 
 	_createLink = async () => {
+		const postedById = localStorage.getItem(GC_USER_ID)
+		if (!postedById) {
+		  console.error('No user logged in')
+		  return
+		}
+
 		const {description, url} = this.state
 		await this.props.createLinkMutation({
 			// pass description & url from component's 
 			// state to createLinkMutation mutation 
 			variables: {
 				description,
-				url
+				url,
+				postedById,
 			}
 		})
 		// redirect to `/` once the link is submitted
@@ -47,16 +55,21 @@ class CreateLink extends Component {
 }
 
 const CREATE_LINK_MUTATION = gql`
-mutation CreateLinkMutation($description: String!, $url: String!) {
-	createLink (
-		description: $description
-		url: $url
-	) {
-		id
-		createdAt
-		url
-		description
-	}
+mutation CreateLinkMutation($description: String!, $url: String!, $postedById: ID!) {
+  createLink(
+    description: $description,
+    url: $url,
+    postedById: $postedById
+  ) {
+    id
+    createdAt
+    url
+    description
+    postedBy {
+      id
+      name
+    }
+  }
 }
 `
 

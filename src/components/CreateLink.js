@@ -4,6 +4,8 @@ import { GC_USER_ID } from '../constants'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 
+import { ALL_LINKS_QUERY } from './LinkList'
+
 class CreateLink extends Component {
 	state = {
 	    description: '',
@@ -47,6 +49,14 @@ class CreateLink extends Component {
 				description,
 				url,
 				postedById,
+			},
+			update: (store, { data: { createLink } }) => {
+				const data = store.readQuery({ query: ALL_LINKS_QUERY })
+				data.allLinks.splice(0,0,createLink)
+				store.writeQuery({
+				  query: ALL_LINKS_QUERY,
+				  data
+				})
 			}
 		})
 		// redirect to `/` once the link is submitted

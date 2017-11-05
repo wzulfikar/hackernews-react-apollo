@@ -6,6 +6,13 @@ import Link from './Link'
 
 class LinkList extends React.Component {
 	componentWillMount () {
+		// refetch links form endpoint
+		// if (!this.props.allLinksQuery.loading) {
+		// 	this.props.allLinksQuery.refetch()
+		// }
+	}
+
+	componentDidMount () {
 		this._subscribeToNewLinks()
 	}
 

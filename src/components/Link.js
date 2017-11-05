@@ -3,16 +3,19 @@ import {graphql} from 'react-apollo'
 import gql from 'graphql-tag'
 
 import {GC_USER_ID} from '../constants'
-import {timeDifferenceForDate} from '../utils'
+import { noty, timeDifferenceForDate } from '../utils'
 
 class Link extends React.Component {
+	state = {
+		loading: false
+	}
 	render () {
 	    const userId = localStorage.getItem(GC_USER_ID)
 		return (
 		  <div className='flex mt2 items-start'>
 		  	<div className="flex items-center">
 				<span className="gray">{this.props.index + 1}. </span>
-				{userId && <div className="pointer ml1 gray f11" onClick={() => this._voteForLink()}>▲</div> }
+				{userId && <div className="pointer ml1 gray f11" onClick={() => this._voteForLink()}>{this.state.loading ? '...' : '▲'}</div> }
 		  	</div>
 			{this.props.link && 
 		  	<div className="ml1">
@@ -32,8 +35,11 @@ class Link extends React.Component {
 		const voterIds = this.props.link.votes.map(vote => vote.user.id)
 		if (voterIds.includes(userId)) {
 			console.log(`User (${userId}) already voted for this link`)
+			noty('You already voted for this link', 'error').show()
 			return
 		}
+
+		this.setState({loading: true})
 
 		const linkId = this.props.link.id
 		await this.props.createVoteMutation({
@@ -48,6 +54,7 @@ class Link extends React.Component {
 			update: (store, { data: {createVote}}) => {
 				console.log("updating votes..");
 				this.props.updateStoreAfterVote(store, createVote, linkId)
+				this.setState({loading: false})
 			}
 		})
 	}

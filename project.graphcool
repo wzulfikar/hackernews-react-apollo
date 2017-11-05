@@ -1,12 +1,13 @@
 # project: cj9lb8x9751my01218plgt27n
-# version: 2
+# version: 4
 
 type Link @model {
-  id: ID! @isUnique
   createdAt: DateTime!
+  description: String!
+  id: ID! @isUnique
   updatedAt: DateTime!
   url: String!
-  description: String!
+  postedBy: User @relation(name: "UsersLinks")
 }
 
 type File @model {
@@ -23,5 +24,21 @@ type File @model {
 type User @model {
   createdAt: DateTime!
   id: ID! @isUnique
+  email: String @isUnique
   updatedAt: DateTime!
+  name: String!
+  password: String
+  links: [Link!]! @relation(name: "UsersLinks")
 }
+
+# 1. Create new user
+# createUser(authProvider: { email: { email, password } }): User
+
+# 2. Login existing user
+# signinUser(email: { email, password }): SignInUserPayload
+
+# SignInUserPayload bundles information about the `user` and `token`
+# type SignInUserPayload {
+#   user: User
+#   token: String
+# }

@@ -5,6 +5,12 @@ import gql from 'graphql-tag'
 import Link from './Link'
 
 class LinkList extends React.Component {
+	componentWillMount () {
+		if (!this.props.allLinksQuery.loading) {
+			this.props.allLinksQuery.refetch()
+		}
+	}
+
 	render () {
 		if (this.props.allLinksQuery && this.props.allLinksQuery.loading) {
 		  return <div>Loading</div>

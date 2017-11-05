@@ -14,9 +14,28 @@ import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { ApolloProvider } from 'react-apollo';
 
-import { GC_AUTH_TOKEN } from './constants';
+import { SubscriptionClient, addGraphQLSubscriptions } from 'subscriptions-transport-ws'
 
-const httpLink = createHttpLink({ uri: 'https://api.graph.cool/simple/v1/cj9lb8x9751my01218plgt27n' })
+import { 
+	GC_AUTH_TOKEN, 
+	ENDPOINT_SUBSCRIPTION_API, 
+	ENDPOINT_SIMPLE_API,
+} from './constants'
+
+const httpLink = createHttpLink({ uri: ENDPOINT_SIMPLE_API })
+
+const wsClient = new SubscriptionClient(ENDPOINT_SUBSCRIPTION_API, {
+	reconnect: true,
+	connectionParams: {
+		authToken: localStorage.getItem(GC_AUTH_TOKEN)
+	}
+})
+
+const httpLinkWithSubscriptions = addGraphQLSubscriptions(
+  httpLink,
+  wsClient
+)
+
 const middlewareLink = new ApolloLink((operation, forward) => {
 	if (!operation.options || !operation.options.headers) {
 	  if (!operation.options) {
@@ -34,7 +53,7 @@ const middlewareLink = new ApolloLink((operation, forward) => {
 })
 
 // construct `link` for use with ApolloClient's `link` 
-const link = middlewareLink.concat(httpLink)
+const link = middlewareLink.concat(httpLinkWithSubscriptions)
 
 const client = new ApolloClient({
 	link: link,

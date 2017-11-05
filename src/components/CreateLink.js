@@ -41,6 +41,8 @@ class CreateLink extends Component {
 				url
 			}
 		})
+		// redirect to `/` once the link is submitted
+		this.props.history.push('/')
 	}
 }
 

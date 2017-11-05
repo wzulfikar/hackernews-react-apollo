@@ -13,7 +13,7 @@ class LinkList extends React.Component {
 
 	render () {
 		if (this.props.allLinksQuery && this.props.allLinksQuery.loading) {
-		  return <div>Loading</div>
+		  return <div>Loading..</div>
 		}
 
 		if (this.props.allLinksQuery && this.props.allLinksQuery.error) {

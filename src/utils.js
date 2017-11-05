@@ -1,3 +1,15 @@
+import Noty from 'noty';
+
+export const noty = (text, type = 'info') => {
+	return new Noty({
+		theme: 'mint',
+	    text: text,
+	    type: type,
+	    timeout: 3500,
+	    layout: 'bottomRight',
+	});
+}
+
 function timeDifference(current, previous) {
 
   const milliSecondsPerMinute = 60 * 1000

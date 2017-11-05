@@ -14,6 +14,7 @@ class LinkList extends React.Component {
 
 	componentDidMount () {
 		this._subscribeToNewLinks()
+		this._subscribeToNewVotes()
 	}
 
 	render () {
@@ -51,8 +52,6 @@ class LinkList extends React.Component {
 	}
 
 	_subscribeToNewLinks = () => {
-		console.log('subscribing to new links')
-
 		// `subscribeToMore` is a function 
 		// available on every query result in react-apollo
 		this.props.allLinksQuery.subscribeToMore({
@@ -81,9 +80,9 @@ class LinkList extends React.Component {
 				}
 			`,
 			updateQuery: (prev, {subscriptionData}) => {
-				console.log('updateQuery', subscriptionData)
+				console.log('subscribing to new links', subscriptionData)
 				if (!subscriptionData.data) {
-					return prev
+					return
 				}
 
 				// merge new link with previous links
@@ -97,6 +96,57 @@ class LinkList extends React.Component {
 				}
 				return result
 			}
+		})
+	}
+
+	_subscribeToNewVotes = () => {
+		this.props.allLinksQuery.subscribeToMore({
+		  document: gql`
+		    subscription {
+		      Vote(filter: {
+		        mutation_in: [CREATED]
+		      }) {
+		        node {
+		          id
+		          link {
+		            id
+		            url
+		            description
+		            createdAt
+		            postedBy {
+		              id
+		              name
+		            }
+		            votes {
+		              id
+		              user {
+		                id
+		              }
+		            }
+		          }
+		          user {
+		            id
+		          }
+		        }
+		      }
+		    }
+		  `,
+		  updateQuery: (prev, { subscriptionData }) => {
+		  	console.log('subscribing to new votes', subscriptionData)
+			if (!subscriptionData.data) {
+				return
+			}
+
+		    const votedLinkIndex = prev.allLinks.findIndex(link => link.id === subscriptionData.data.Vote.node.link.id)
+		    const link = subscriptionData.data.Vote.node.link
+		    const newAllLinks = prev.allLinks.slice()
+		    newAllLinks[votedLinkIndex] = link
+		    const result = {
+		      ...prev,
+		      allLinks: newAllLinks
+		    }
+		    return result
+		  }
 		})
 	}
 }

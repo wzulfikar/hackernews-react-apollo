@@ -4,6 +4,8 @@ import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import Link from './Link'
 
+import { GC_USER_ID, GC_AUTH_TOKEN, LINKS_PER_PAGE } from '../constants'
+
 class LinkList extends React.Component {
 	componentWillMount () {
 		// refetch links form endpoint
@@ -26,20 +28,61 @@ class LinkList extends React.Component {
 		  return <div>Error</div>
 		}
 
-		const linksToRender = this.props.allLinksQuery.allLinks
+		const isNewPage = this.props.location.pathname.includes('new') || this.props.location.pathname === '/'
+		const linksToRender = this._getLinksToRender(isNewPage)
+		const userId = localStorage.getItem(GC_USER_ID)
 		
 		return (
 		  <div>
-		  	{linksToRender.map((link, idx) => (
-		  		<Link key={link.id} updateStoreAfterVote={this._updateCacheAfterVote} link={link} index={idx}/>
-		  	))}
+			<div>
+				{linksToRender.map((link, idx) => (
+					<Link key={link.id} updateStoreAfterVote={this._updateCacheAfterVote} link={link} index={idx}/>
+				))}
+			</div>
+			{isNewPage &&
+		    <div>
+		      <button onClick={() => this._previousPage()}>Previous</button>
+		      <button onClick={() => this._nextPage()}>Next</button>
+		    </div>
+		    }
 		  </div>
 		)
 	}
 
+	_getLinksToRender = (isNewPage) => {
+	    if (isNewPage) {
+	      return this.props.allLinksQuery.allLinks
+	    }
+	    const rankedLinks = this.props.allLinksQuery.allLinks.slice()
+	    rankedLinks.sort((l1, l2) => l2.votes.length - l1.votes.length)
+	    return rankedLinks.slice(0, 10)
+	}
+
+	_nextPage = () => {
+	  const page = parseInt(this.props.match.params.page, 10)
+	  if (page <= this.props.allLinksQuery._allLinksMeta.count / LINKS_PER_PAGE) {
+	    const nextPage = page + 1
+	    this.props.history.push(`/new/${nextPage}`)
+	  }
+	}
+
+	_previousPage = () => {
+	  const page = parseInt(this.props.match.params.page, 10)
+	  if (page > 1) {
+	    const previousPage = page - 1
+	    this.props.history.push(`/new/${previousPage}`)
+	  }
+	}
+
 	_updateCacheAfterVote = (store, createVote, linkId) => {
+		const isNewPage = this.props.location.pathname.includes('new')
+		const page = parseInt(this.props.match.params.page, 10)
+		const skip = isNewPage ? (page - 1) * LINKS_PER_PAGE : 0
+		const first = isNewPage ? LINKS_PER_PAGE : 100
+		const orderBy = isNewPage ? "createdAt_DESC" : null
+
 		// 1. read `ALL_LINKS_QUERY` from cache using ApolloClient's `readQuery`
-		const data = store.readQuery({ query: ALL_LINKS_QUERY })
+		const data = store.readQuery({ query: ALL_LINKS_QUERY, variables: { first, skip, orderBy } })
 
 		// 2. retrieve link that the user just voted
 		const votedLink = data.allLinks.find(link => link.id === linkId)
@@ -152,8 +195,8 @@ class LinkList extends React.Component {
 }
 
 export const ALL_LINKS_QUERY = gql`
-	query AllLinksQuery {
-		allLinks {
+	query AllLinksQuery($first: Int, $skip: Int, $orderBy: LinkOrderBy) {
+		allLinks(first: $first, skip: $skip, orderBy: $orderBy) {
 			id
 			createdAt
 			url
@@ -169,7 +212,24 @@ export const ALL_LINKS_QUERY = gql`
 		      }
 		    }
 		}
+		_allLinksMeta {
+	      count
+	    }
 	}
 `
 // use apollo's higher order component `graphql`
-export default graphql(ALL_LINKS_QUERY, {name: 'allLinksQuery'})(LinkList)
+export default graphql(ALL_LINKS_QUERY, {
+	name: 'allLinksQuery',
+	options: (ownProps) => {
+	  // parse page from route params
+	  const page = parseInt(ownProps.match.params.page, 10)
+
+	  const isNewPage = ownProps.location.pathname.includes('new') || ownProps.location.pathname === '/'
+	  const skip = isNewPage ? (page - 1) * LINKS_PER_PAGE : 0
+	  const first = isNewPage ? LINKS_PER_PAGE : 100
+	  const orderBy = isNewPage ? 'createdAt_DESC' : null
+	  return {
+	    variables: { first, skip, orderBy }
+	  }
+	}
+})(LinkList)

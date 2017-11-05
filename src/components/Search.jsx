@@ -7,10 +7,16 @@ import Link from './Link'
 import { noty } from '../utils'
 
 class Search extends Component {
+	searchInput
+
 	state = {
 		links: [],
 		searchText: '',
 		loading: false,
+	}
+
+	componentDidMount(){
+	   this.searchInput.focus(); 
 	}
 
 	render() {
@@ -20,7 +26,7 @@ class Search extends Component {
 				<input type="text" 
 				onChange={(e) => this.setState({ searchText: e.target.value })} 
 				placeholder='insert text to search'
-				autofocus={true}
+				ref={(input) => { this.searchInput = input; }}
 				/>
 				<button onClick={() => this._executeSearch() }>{this.state.loading ? '...' : 'search'}</button>
 			</div>
@@ -33,6 +39,7 @@ class Search extends Component {
 		const { searchText } = this.state
 		if (!searchText.length) {
 			noty('Please insert text to search', 'error').show()
+	   		this.searchInput.focus();
 			return
 		}
 		this.setState({ loading: true })

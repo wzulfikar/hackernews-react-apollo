@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import {Switch, Route} from 'react-router-dom'
 
+import { Link } from 'react-router-dom'
+
 // import logo from '../logo.svg';
 import '../styles/App.css';
 import Header from './Header';
@@ -20,7 +22,7 @@ class App extends Component {
 			<Route exact path='/login' component={Login} />
 			<Route exact path='/search' component={Search} />
 			<Route exact path='/submit' component={CreateLink} />
-			<Route component={ () => <div>Page not found :(</div> } />
+			<Route component={ () => <div>Page not found. <Link to='/'>Back to home</Link></div> } />
 		</Switch>
 		</div>
       </div>

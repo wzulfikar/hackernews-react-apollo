@@ -24,7 +24,7 @@ class Header extends Component {
 				<div className='ml1 pointer black' onClick={ () => {
 					localStorage.removeItem(GC_USER_ID)
 					localStorage.removeItem(GC_AUTH_TOKEN)
-					this.props.history.push('/new/1')
+					this.props.history.push('/')
 				}}>logout</div>
 				:
 				<Link to='/login' className='ml1 no-underline black'>login</Link>

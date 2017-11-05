@@ -19,7 +19,7 @@ class App extends Component {
 			<Route exact path='/' component={LinkList} />
 			<Route exact path='/login' component={Login} />
 			<Route exact path='/search' component={Search} />
-			<Route exact path='/create' component={CreateLink} />
+			<Route exact path='/submit' component={CreateLink} />
 			<Route component={ () => <div>Page not found :(</div> } />
 		</Switch>
 		</div>

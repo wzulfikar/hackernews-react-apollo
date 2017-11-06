@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { withRouter } from 'react-router'
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import {GC_USER_ID, GC_AUTH_TOKEN} from '../constants'
 
 class Header extends Component {
@@ -9,15 +9,15 @@ class Header extends Component {
 		return (
 		<div className="flex pa1 justify-between nowrap orange">
 			<div className="flex flex-fixed black">
-				<Link to='/' className='ml1 no-underline black'>new</Link>
+				<NavLink activeClassName='white' to='/new' className='ml1 no-underline black'>new</NavLink>
 				<div className="ml1">|</div>
-				<Link to='/top' className='ml1 no-underline black'>top</Link>
+				<NavLink exact activeClassName='white' to='/top' className='ml1 no-underline black'>top</NavLink>
 				<div className="ml1">|</div>
-				<Link to='/search' className='ml1 no-underline black'>search</Link>
+				<NavLink exact activeClassName='white' to='/search' className='ml1 no-underline black'>search</NavLink>
 				{userId &&
 				<div className="flex">
 					<div className="ml1">|</div>
-					<Link to='/submit' className='ml1 no-underline black'>submit</Link>
+					<NavLink exact activeClassName='white' to='/submit' className='ml1 no-underline black'>submit</NavLink>
 				</div>
 				}
 			</div>
@@ -29,7 +29,7 @@ class Header extends Component {
 					this.props.history.push('/')
 				}}>logout</div>
 				:
-				<Link to='/login' className='ml1 no-underline black'>login</Link>
+				<NavLink exact activeClassName='white' to='/login' className='ml1 no-underline black'>login</NavLink>
 				}
 			</div>
 		</div>

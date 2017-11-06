@@ -4,29 +4,40 @@ import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
 import {GC_USER_ID, GC_AUTH_TOKEN} from '../constants'
 
+import '../styles/login.css'
+
 class Login extends Component {
 	state = {
 		login: true,
 		email: '',
 		password: '',
 		name: '',
+		username: '',
+		loading: false,
 	}
 	render() {
 	  return (
 		<div>
 			<h4 className="mv3">{this.state.login ? 'Login' : 'Sign Up'}</h4>
 			<div className="flex flex-column">
+			<input type="text"
+				value={this.state.email}
+				onChange={(e) => this.setState({email: e.target.value})}
+				placeholder='Your email address'
+				autoFocus
+			/>
 			{!this.state.login && 
 			<input type="text"
 				value={this.state.name}
 				onChange={(e) => this.setState({name: e.target.value})}
 				placeholder='Your name'
 			/>}
+			{!this.state.login && 
 			<input type="text"
-				value={this.state.email}
-				onChange={(e) => this.setState({email: e.target.value})}
-				placeholder='Your email address'
-			/>
+				value={this.state.username}
+				onChange={(e) => this.setState({username: e.target.value})}
+				placeholder='Your username'
+			/>}
 			<input type="password"
 				value={this.state.password}
 				onChange={(e) => this.setState({password: e.target.value})}
@@ -38,7 +49,7 @@ class Login extends Component {
 					className="pointer mr2 button"
 					onClick={() => this._confirm()}
 				>
-				{this.state.login ? 'Login' : 'Create account'}
+				{this.state.loading ? '...' : (this.state.login ? 'Login' : 'Create account')}
 				</div>
 				<div className="pointer button"
 					onClick={() => this.setState({ login: !this.state.login})}>
@@ -50,13 +61,16 @@ class Login extends Component {
 	}
 
 	_confirm = async () => {
-		const { name, email, password } = this.state
+		const { name, email, password, username } = this.state
+
+		this.setState({loading: true})
+
 		if (this.state.login) {
 			// login user
 			const result = await this.props.signinUserMutation({
 				variables: {
 					email,
-					password,
+					password
 				}
 			})
 			const id = result.data.signinUser.user.id
@@ -69,6 +83,7 @@ class Login extends Component {
 					name,
 					email,
 					password,
+					username
 				}
 			})
 			const id = result.data.signinUser.user.id
@@ -85,13 +100,14 @@ class Login extends Component {
 }
 
 const CREATE_USER_MUTATION = gql`
-mutation CreateUserMutation($name: String!, $email: String!, $password: String!) {
+mutation CreateUserMutation($name: String!, $email: String!, $password: String!, $username: String!) {
   createUser(
     name: $name,
+    username:$username,
     authProvider: {
       email: {
         email: $email,
-        password: $password
+        password: $password,
       }
     }
   ) {

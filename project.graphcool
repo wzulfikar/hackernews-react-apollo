@@ -1,5 +1,5 @@
 # project: cj9lb8x9751my01218plgt27n
-# version: 5
+# version: 7
 
 type Link @model {
   createdAt: DateTime!
@@ -31,6 +31,8 @@ type User @model {
   password: String
   links: [Link!]! @relation(name: "UsersLinks")
   votes: [Vote!]! @relation(name: "UsersVotes")
+  bio: String
+  username: String @isUnique @defaultValue(value: "")
 }
 
 type Vote @model {

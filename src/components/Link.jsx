@@ -1,9 +1,10 @@
 import React from 'react'
 import {graphql} from 'react-apollo'
 import gql from 'graphql-tag'
+import { Link as ReactLink } from 'react-router-dom'
 
 import {GC_USER_ID} from '../constants'
-import { noty, timeDifferenceForDate } from '../utils'
+import { noty, timeDifferenceForDate, strLimit } from '../utils'
 
 class Link extends React.Component {
 	state = {
@@ -21,11 +22,11 @@ class Link extends React.Component {
 		  	<div className="ml1">
 				<div>
   					<span className='pointer' title={this.props.link.url} onClick={ () => window.location.href = this.props.link.url }>{this.props.link.description}</span>
-  					&nbsp;(<a className='gray' href={this.props.link.url}>{this.props.link.url}</a>)
+  					&nbsp;<a className='gray no-underline f6' href={this.props.link.url}>({strLimit(this.props.link.url, 30)})</a>
 				</div>
 				<div className="f6 lh-copy gray">
-				{this.props.link.votes && `${this.props.link.votes.length} votes | `} 
-				by {this.props.link.postedBy ? this.props.link.postedBy.name : 'Unknown'} · {timeDifferenceForDate(this.props.link.createdAt)}
+				{this.props.link.votes && `${this.props.link.votes.length} points ∙ `} 
+				by {this.props.link.postedBy ? <ReactLink className='gray' to={`/u/${this.props.link.postedBy.name}`}>{this.props.link.postedBy.name}</ReactLink> : 'unknown'} {timeDifferenceForDate(this.props.link.createdAt)}
 				</div>
 		  	</div>
 			}

@@ -52,3 +52,7 @@ export function timeDifferenceForDate(date) {
   const updated = new Date(date).getTime()
   return timeDifference(now, updated)
 }
+
+export function strLimit(str, limit) {
+	return str.length > limit ? str.slice(0, limit) + '...' : str
+}

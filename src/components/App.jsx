@@ -20,6 +20,7 @@ class App extends Component {
 		<div className="ph3 pv1 background-gray">
 		<Switch>
 			<Route exact path='/' render={() => <Redirect to='/new/1' />} />
+			<Route exact path='/new' render={() => <Redirect to='/new/1' />} />
 			<Route exact path='/login' component={Login} />
 			<Route exact path='/submit' component={CreateLink} />
 			<Route exact path='/search' component={Search} />

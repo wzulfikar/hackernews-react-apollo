@@ -15,7 +15,7 @@ class Link extends React.Component {
 		return (
 		  <div className='flex mt2 items-start'>
 		  	<div className="flex items-center">
-				<span className="gray">{this.props.index + 1}. </span>
+				<span className="gray">{this.props.index + 1 + this.props.offset}. </span>
 				{userId && <div className="pointer ml1 gray f11" onClick={() => this._voteForLink()}>{this.state.loading ? '...' : '▲'}</div> }
 		  	</div>
 			{this.props.link && 

@@ -7,6 +7,10 @@ import Link from './Link'
 import { LINKS_PER_PAGE } from '../constants'
 
 class LinkList extends React.Component {
+	state = {
+		hasPrevious: this.props.match.page > 1,
+		hasNext: true,
+	}
 	componentWillMount () {
 		// refetch links form endpoint
 		// if (!this.props.allLinksQuery.loading) {
@@ -35,13 +39,13 @@ class LinkList extends React.Component {
 		  <div>
 			<div>
 				{linksToRender.map((link, idx) => (
-					<Link key={link.id} updateStoreAfterVote={this._updateCacheAfterVote} link={link} index={idx}/>
+					<Link key={link.id} updateStoreAfterVote={this._updateCacheAfterVote} link={link} index={idx} offset={(parseInt(this.props.match.params.page, 10) - 1) * LINKS_PER_PAGE}/>
 				))}
 			</div>
 			{isNewPage &&
-		    <div>
-		      <button onClick={() => this._previousPage()}>Previous</button>
-		      <button onClick={() => this._nextPage()}>Next</button>
+		    <div className='tc'>
+		      <button onClick={() => this._previousPage()} disabled={!this.state.hasPrevious}>Previous</button>
+		      <button onClick={() => this._nextPage()} disabled={!this.state.hasNext}>Next</button>
 		    </div>
 		    }
 		  </div>
@@ -59,17 +63,31 @@ class LinkList extends React.Component {
 
 	_nextPage = () => {
 	  const page = parseInt(this.props.match.params.page, 10)
-	  if (page <= this.props.allLinksQuery._allLinksMeta.count / LINKS_PER_PAGE) {
-	    const nextPage = page + 1
+	  const maxPage = this.props.allLinksQuery._allLinksMeta.count / LINKS_PER_PAGE
+	  const nextPage = page + 1
+	  
+	  if (nextPage > maxPage) {
+	  	this.setState({ hasNext: false, hasPrevious: true })
+	  } else {
+	  	this.setState({ hasPrevious: true })
+	  }
+
+	  if (page < maxPage) {
 	    this.props.history.push(`/new/${nextPage}`)
 	  }
 	}
 
 	_previousPage = () => {
 	  const page = parseInt(this.props.match.params.page, 10)
+	  const previousPage = page - 1
+
+	  if (previousPage <= 1) {
+	  	this.setState({ hasPrevious: false })
+	  }
+
 	  if (page > 1) {
-	    const previousPage = page - 1
 	    this.props.history.push(`/new/${previousPage}`)
+	  	this.setState({ hasNext: true })
 	  }
 	}
 
@@ -122,7 +140,7 @@ class LinkList extends React.Component {
 				}
 			`,
 			updateQuery: (prev, {subscriptionData}) => {
-				console.log('subscribing to new links', subscriptionData)
+				// console.log('subscribing to new links', subscriptionData)
 				if (!subscriptionData.data) {
 					return
 				}
@@ -174,7 +192,7 @@ class LinkList extends React.Component {
 		    }
 		  `,
 		  updateQuery: (prev, { subscriptionData }) => {
-		  	console.log('subscribing to new votes', subscriptionData)
+		  	// console.log('subscribing to new votes', subscriptionData)
 			if (!subscriptionData.data) {
 				return
 			}

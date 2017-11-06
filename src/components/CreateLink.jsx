@@ -5,6 +5,7 @@ import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 
 import { ALL_LINKS_QUERY } from './LinkList'
+import { noty } from '../utils'
 
 class CreateLink extends Component {
 	state = {
@@ -21,6 +22,7 @@ class CreateLink extends Component {
 					value={this.state.description}
 					onChange={(e)=>this.setState({description: e.target.value})}
 					placeholder='A description for the link'
+					autoFocus
 				/>
 				<input type="text"
 				 	className="mb2"
@@ -40,6 +42,12 @@ class CreateLink extends Component {
 	    console.error('No user logged in')
 	    return
 	  }
+
+	  if (!this.state.description.length || !this.state.description.length) {
+	  	noty('Description or URL cannot be empty', 'error').show()
+	  	return
+	  }
+
 	  const { description, url } = this.state
 	  await this.props.createLinkMutation({
 	    variables: {

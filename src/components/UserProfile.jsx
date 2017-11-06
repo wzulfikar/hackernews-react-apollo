@@ -17,7 +17,7 @@ class UserProfile extends Component {
 			<tr>
 				<td>created</td>
 				<td>:</td>
-				<td>{timeDifferenceForDate(new Date)}</td>
+				<td>{ timeDifferenceForDate(new Date()) }</td>
 			</tr>
 			<tr>
 				<td>karma</td>

@@ -15,7 +15,7 @@ class Link extends React.Component {
 		return (
 		  <div className='flex mt2 items-start'>
 		  	<div className="flex items-center">
-				<span className="gray">{this.props.index + 1 + this.props.offset}. </span>
+				<span className="gray">{this.props.index + 1 + (this.props.offset || 0)}. </span>
 				{userId && <div className="pointer ml1 gray f11" onClick={() => this._voteForLink()}>{this.state.loading ? '...' : '▲'}</div> }
 		  	</div>
 			{this.props.link && 
@@ -24,7 +24,7 @@ class Link extends React.Component {
   					<span className='pointer' title={this.props.link.url} onClick={ () => window.location.href = this.props.link.url }>{this.props.link.description}</span>
   					&nbsp;<a className='gray no-underline f6' href={this.props.link.url}>({strLimit(this.props.link.url, 30)})</a>
 				</div>
-				<div className="f6 lh-copy gray">
+				<div className="lh-copy gray" style={{ fontSize: '0.7em' }}>
 				{this.props.link.votes && `${this.props.link.votes.length} points ∙ `} 
 				by {this.props.link.postedBy ? <ReactLink className='gray' to={`/u/${this.props.link.postedBy.name}`}>{this.props.link.postedBy.name}</ReactLink> : 'unknown'} {timeDifferenceForDate(this.props.link.createdAt)}
 				</div>

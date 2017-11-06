@@ -15,7 +15,7 @@ import UserProfile from './UserProfile'
 class App extends Component {
   render() {
     return (
-      <div className="center w85">
+      <div className="center container">
 		<Header />
 		<div className="ph3 pv1 background-gray">
 		<Switch>

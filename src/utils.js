@@ -37,15 +37,16 @@ function timeDifference(current, previous) {
   }
 
   if (elapsed < milliSecondsPerMonth) {
-    return Math.round(elapsed/milliSecondsPerDay) + ' days ago'
+    return Math.round(elapsed/milliSecondsPerDay) + ' day(s) ago'
   }
 
   if (elapsed < milliSecondsPerYear) {
     return Math.round(elapsed/milliSecondsPerMonth) + ' mo ago'
   }
 
-  return Math.round(elapsed/milliSecondsPerYear ) + ' years ago'
+  return Math.round(elapsed/milliSecondsPerYear ) + ' year(s) ago'
 }
+
 
 export function timeDifferenceForDate(date) {
   const now = new Date().getTime()

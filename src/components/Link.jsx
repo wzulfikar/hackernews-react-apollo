@@ -26,7 +26,7 @@ class Link extends React.Component {
 				</div>
 				<div className="lh-copy gray" style={{ fontSize: '0.7em' }}>
 				{this.props.link.votes && `${this.props.link.votes.length} points ∙ `} 
-				by {this.props.link.postedBy ? <ReactLink className='gray' to={`/u/${this.props.link.postedBy.name}`}>{this.props.link.postedBy.name}</ReactLink> : 'unknown'} {timeDifferenceForDate(this.props.link.createdAt)}
+				by {this.props.link.postedBy ? <ReactLink className='gray' to={`/u/${this.props.link.postedBy.username}`}>{this.props.link.postedBy.username}</ReactLink> : 'unknown'} {timeDifferenceForDate(this.props.link.createdAt)}
 				</div>
 		  	</div>
 			}

@@ -221,6 +221,7 @@ export const ALL_LINKS_QUERY = gql`
 			postedBy {
 		      id
 		      name
+		      username
 		    }
 		    votes {
 		      id
